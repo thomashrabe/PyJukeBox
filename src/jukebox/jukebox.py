@@ -40,43 +40,98 @@ def trigger_action_for_event_strings(event_strings: [str]):
     print(code)
 
 
-def rfid_input_loop(rfid_device_path: str):
+class JukeBoxState(object):
     """
-    Read RFID reader input in a loop, trigger actions when 
-    a card was read.
-    :param rfid_device_path:
+    Stores a the jukebox state
     """
 
-    device = InputDevice(rfid_device_path)
+    CURRENTLY_PLAYING = False
+    CURRENT_AUDIO_FILE = None
+    LAST_USER_ACTION = None
 
-    chip_swiped = False
-    trigger_action = False
-    event_strings = []
 
-    for event in device.read_loop():
-        if event.type == ecodes.EV_KEY:
+class JukeBox(JukeBoxState):
 
-            event_string = str(categorize(event))
+    def __init__(self, device_path: str, db_path: str):
+        """
+        :param device_path:
+        :param db_path:
+        """
 
-            event_strings.append(event_string)
+        self._device_path = device_path
+        self._db_path 
 
-            if not chip_swiped and '11 (KEY_0), down' in event_string:
-                chip_swiped = True
+    def rfid_input_loop(self):
+        """
+        Read RFID reader input in a loop, trigger actions when 
+        a card was read.
+        """
 
-            if chip_swiped and '28 (KEY_ENTER), up' in event_string:
-                chip_swiped = False
-                trigger_action = True
+        device = InputDevice(self._device_path)
 
-            if trigger_action:
-                try:
-                    trigger_action_for_event_strings(event_strings)
-                except Exception as e:
-                    logging.error('Failed trigger action')
-                    logging.error(e)
-                finally:
+        chip_swiped = False
+        trigger_action = False
+        event_strings = []
+
+        # This is an infinite loop
+        for event in device.read_loop():
+            if event.type == ecodes.EV_KEY:
+
+                event_string = str(categorize(event))
+
+                event_strings.append(event_string)
+
+                if not chip_swiped and '11 (KEY_0), down' in event_string:
+                    chip_swiped = True
+
+                if chip_swiped and '28 (KEY_ENTER), up' in event_string:
                     chip_swiped = False
-                    trigger_action = False
-                    event_strings = []
+                    trigger_action = True
+
+                if trigger_action:
+                    try:
+                        self.on_user_card_swipe(event_strings)
+                    except Exception as e:
+                        logging.error('Failed trigger action')
+                        logging.error(e)
+                    finally:
+                        chip_swiped = False
+                        trigger_action = False
+                        event_strings = []
+
+
+    def play_file(self, sound_file_path):
+        """
+        :param sound_file_path:
+        """
+        pass
+
+    def convert_event_strings_to_code(self, event_strings: [str]) -> str:
+        """
+        Converts a list of RFID readings to a card specific code
+        :param event_strings:
+        """
+        code = ''
+        for event_string in event_strings:
+
+            if 'KEY_0' in event_string or 'KEY_ENTER' in event_string:
+                continue
+            
+            suffix = event_string.split('KEY_')[1]
+            v = suffix.split(')')[0]
+
+            code += v
+        
+        return code
+
+    def on_user_card_swipe(event_strings: [str]):
+        """
+        Responds to user card swipe and 
+        :param event_strings:
+        """
+
+        code = convert_event_strings_to_code(event_strings)
+        print(code)
 
 if __name__ == '__main__':
 
