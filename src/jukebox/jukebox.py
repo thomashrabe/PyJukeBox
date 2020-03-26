@@ -77,14 +77,34 @@ class JukeBox(JukeBoxState):
                         event_strings = []
 
 
-    def play_file(self, sound_file_path):
+    def play_file(self, sound_file_path: str):
         """
         :param sound_file_path:
         """
 
         vlc_command = 'cvlc {}'.format(sound_file_path)
 
+        self.CURRENTLY_PLAYING = True
+        self.CURRENT_AUDIO_FILE = sound_file_path
+        self.LAST_USER_ACTION = datetime.datetime.now()
+
+        msg = 'Playing {}'.format(sound_file_path)
+        logging.warning(msg)
         subprocess.run(vlc_command, shell=True, capture_output=True)
+        msg = 'Finished {}'.format(sound_file_path)
+        logging.warning(msg)
+
+        self.CURRENTLY_PLAYING = False
+        self.CURRENT_AUDIO_FILE = None
+
+    def play_playlist(self, sound_files: str):
+        """
+        Plays a list of sound files
+        :param sound_files: list of files
+        """
+
+        for sound_file in sound_files:
+            self.play_file(sound_file)
 
     def convert_event_strings_to_code(self, event_strings: [str]) -> str:
         """
@@ -118,9 +138,12 @@ class JukeBox(JukeBoxState):
         
         if sound_file_path is not None:
 
-            logging.info(code, sound_file_path)
+            logging.warn("Recieved code {} - {}".format(code, sound_file_path))
 
-            self.play_file(sound_file_path)
+            if type(sound_file_path) == list:
+                self.play_playlist(sound_file_path)
+            elif type(sound_file_path) == str:
+                self.play_file(sound_file_path)
 
 if __name__ == '__main__':
 
