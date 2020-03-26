@@ -59,7 +59,13 @@ class JukeBox(JukeBoxState):
         """
 
         self._device_path = device_path
-        self._db_path 
+        self._db_path = db_path
+
+    def start(self):
+        """
+        Just a proxy function for calling
+        """
+        self.rfid_input_loop()
 
     def rfid_input_loop(self):
         """
@@ -124,7 +130,7 @@ class JukeBox(JukeBoxState):
         
         return code
 
-    def on_user_card_swipe(event_strings: [str]):
+    def on_user_card_swipe(self, event_strings: [str]):
         """
         Responds to user card swipe and 
         :param event_strings:
@@ -152,4 +158,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    rfid_input_loop(args.i)
+    jukebox = JukeBox(args.i, args.db)
+
+    jukebox.start()
