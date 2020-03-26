@@ -31,6 +31,8 @@ class JukeBox(JukeBoxState):
 
         self._device_path = device_path
         self._db_path = db_path
+        self._logger = logging.Logger(name="JukeBox Logger")
+        self._logger.setLevel(logging.INFO)
 
     def start(self):
         """
@@ -69,8 +71,8 @@ class JukeBox(JukeBoxState):
                     try:
                         self.on_user_card_swipe(event_strings)
                     except Exception as e:
-                        logging.error('Failed trigger action')
-                        logging.error(e)
+                        self._logger.error('Failed trigger action')
+                        self._logger.error(e)
                     finally:
                         chip_swiped = False
                         trigger_action = False
@@ -82,17 +84,17 @@ class JukeBox(JukeBoxState):
         :param sound_file_path:
         """
 
-        vlc_command = 'cvlc {}'.format(sound_file_path)
+        vlc_command = '/usr/bin/cvlc {}'.format(sound_file_path)
 
         self.CURRENTLY_PLAYING = True
         self.CURRENT_AUDIO_FILE = sound_file_path
         self.LAST_USER_ACTION = datetime.datetime.now()
 
         msg = 'Playing {}'.format(sound_file_path)
-        logging.warning(msg)
+        self._logger.info(msg)
         subprocess.run(vlc_command, shell=True, capture_output=True)
         msg = 'Finished {}'.format(sound_file_path)
-        logging.warning(msg)
+        self._logger.info(msg)
 
         self.CURRENTLY_PLAYING = False
         self.CURRENT_AUDIO_FILE = None
