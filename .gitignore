@@ -1,2 +1,3 @@
 *.jbdb
 test/*
+*.pyc

@@ -109,10 +109,15 @@ class JukeBox(JukeBoxState):
         :param event_strings:
         """
 
-        code = convert_event_strings_to_code(event_strings)
+        code = self.convert_event_strings_to_code(event_strings)
 
+        jbdb = read_jbdb(self._db_path)
 
-        print(code)
+        sound_file_path = jbdb.get(code)
+        
+        if sound_file_path is not None:
+
+            print(code, sound_file_path)
 
 if __name__ == '__main__':
 
