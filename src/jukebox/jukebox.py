@@ -10,7 +10,7 @@ import datetime
 from evdev import InputDevice, categorize, ecodes
 
 
-from jukebox.jbdb.db import read_jbdb
+from db import read_jbdb
 
 
 class JukeBoxState(object):
