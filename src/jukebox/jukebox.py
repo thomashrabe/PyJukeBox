@@ -6,9 +6,7 @@ import logging
 import subprocess
 import datetime
 
-
 from evdev import InputDevice, categorize, ecodes
-
 
 from db import read_jbdb
 
@@ -83,7 +81,10 @@ class JukeBox(JukeBoxState):
         """
         :param sound_file_path:
         """
-        pass
+
+        vlc_command = 'cvlc {}'.format(sound_file_path)
+
+        subprocess.run(vlc_command, shell=True, capture_output=True)
 
     def convert_event_strings_to_code(self, event_strings: [str]) -> str:
         """
@@ -117,7 +118,9 @@ class JukeBox(JukeBoxState):
         
         if sound_file_path is not None:
 
-            print(code, sound_file_path)
+            logging.info(code, sound_file_path)
+
+            self.play_file(sound_file_path)
 
 if __name__ == '__main__':
 
