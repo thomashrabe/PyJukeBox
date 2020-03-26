@@ -4,40 +4,13 @@
 import argparse
 import logging
 import subprocess
+import datetime
+
 
 from evdev import InputDevice, categorize, ecodes
 
-def play_file(sound_file_path):
-    """
-    :param sound_file_path:
-    """
-    pass
 
-def convert_event_strings_to_code(event_strings: [str]) -> str:
-    """
-    :param event_strings:
-    """
-    code = ''
-    for event_string in event_strings:
-
-        if 'KEY_0' in event_string or 'KEY_ENTER' in event_string:
-            continue
-        
-        suffix = event_string.split('KEY_')[1]
-        v = suffix.split(')')[0]
-
-        code += v
-    
-    return code
-
-def trigger_action_for_event_strings(event_strings: [str]):
-    """
-    Do something
-    :param event_strings:
-    """
-
-    code = convert_event_strings_to_code(event_strings)
-    print(code)
+from jukebox.jbdb.db import read_jbdb
 
 
 class JukeBoxState(object):
@@ -48,7 +21,7 @@ class JukeBoxState(object):
     CURRENTLY_PLAYING = False
     CURRENT_AUDIO_FILE = None
     LAST_USER_ACTION = None
-
+    MIN_TIME_BETWEEN_SWIPES_IN_SEC = 10
 
 class JukeBox(JukeBoxState):
 
@@ -137,6 +110,8 @@ class JukeBox(JukeBoxState):
         """
 
         code = convert_event_strings_to_code(event_strings)
+
+
         print(code)
 
 if __name__ == '__main__':
