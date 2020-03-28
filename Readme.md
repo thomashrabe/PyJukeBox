@@ -17,4 +17,10 @@ sudo pip3 install python-vlc
 
 Run `evtest` and `lsusb`. If no other input is plugged into the computer, `evtest` will output the device path for RFID.
 
-## Media db
+## Setup Media db
+Create a JSON file of the format 
+```
+{
+    "RFID_CODE" : "/path/to/a/audio/file.mp3"
+}
+```
