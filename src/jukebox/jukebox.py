@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import argparse
 import logging
 import subprocess
@@ -10,7 +9,7 @@ import time
 
 from evdev import InputDevice, categorize, ecodes
 
-from db import read_jbdb
+import db 
 
 class JukeBox(object):
 
@@ -147,7 +146,7 @@ class JukeBox(object):
 
         code = self.convert_event_strings_to_code(event_strings)
 
-        jbdb = read_jbdb(self._db_path)
+        jbdb = db.read_jbdb(self._db_path)
 
         sound_file_path = jbdb.get(code)
         
@@ -170,6 +169,55 @@ class JukeBox(object):
 
         return difference.total_seconds() > self.MIN_TIME_BETWEEN_SWIPES_IN_SEC
 
+    def add_new_mp3(self, sound_file_path: str) -> None:
+        """
+        :param sound_file_path:
+        """
+
+        device = InputDevice(self._device_path)
+
+        chip_swiped = False
+        trigger_action = False
+        event_strings = []
+
+        # This is an infinite loop
+        for event in device.read_loop():
+            if event.type == ecodes.EV_KEY:
+
+                event_string = str(categorize(event))
+
+                event_strings.append(event_string)
+
+                if not chip_swiped and '11 (KEY_0), down' in event_string:
+                    chip_swiped = True
+
+                if chip_swiped and '28 (KEY_ENTER), up' in event_string:
+                    chip_swiped = False
+                    trigger_action = True
+
+                if trigger_action:
+                    try:
+                        import pdb; pdb.set_trace()
+                        self._add_new_sound_file(event_strings, sound_file_path)
+                        self._logger.warning('{} added to JukeBox DB {}'.format(
+                            sound_file_path, self._db_path))
+
+                    except Exception as e:
+                        self._logger.error('Failed adding new sound file')
+                        self._logger.error(e)
+                    finally:
+                        break
+
+    def _add_new_sound_file(self, event_strings: [str], sound_file_path: str) -> None:
+        """
+        :param event_strings:
+        :param sound_file_path:
+        """
+
+        code = self.convert_event_strings_to_code(event_strings)
+        db.add_new_file(self._db_path, code, sound_file_path)
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
@@ -184,8 +232,15 @@ if __name__ == '__main__':
                         help='Device path to RFID reader',
                         default='/dev/input/event0')
 
+    parser.add_argument('-a',
+                        type=str,
+                        help='Add new mp3 to library. Specify mp3 path, then swipe RFID card')
+
     args = parser.parse_args()
 
     jukebox = JukeBox(args.i, args.db)
 
-    jukebox.start()
+    if args.a is not None:
+        jukebox.add_new_mp3(args.a)
+    else:
+        jukebox.start()
