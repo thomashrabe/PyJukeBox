@@ -34,6 +34,18 @@ class JukeBox(object):
         """
         Just a proxy function for calling
         """
+
+        print('-----------------------------------')
+        print('|                                 |')
+        print('|             JukeBox             |')
+        print('|                                 |')
+        print('-----------------------------------')
+        print('|                                 |')
+        print('|       Start swiping your        |')
+        print('|       RFID Cards to play        |')
+        print('|       your favorite tracks      |')
+        print('-----------------------------------')
+
         self.rfid_input_loop()
 
     def rfid_input_loop(self):
@@ -96,10 +108,6 @@ class JukeBox(object):
             return
 
         self._last_user_action = datetime.datetime.now()
-
-        self._logger.warning(msg)
-
-        self.LAST_USER_ACTION = datetime.datetime.now()
 
         self._vlc_play(sound_file_path)
         time.sleep(0.1)
@@ -175,9 +183,6 @@ if __name__ == '__main__':
                         type=str,
                         help='Device path to RFID reader',
                         default='/dev/input/event0')
-
-    parser.add_argument('-t', action='store_true',
-                        help='Test mode')
 
     args = parser.parse_args()
 
