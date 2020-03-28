@@ -5,13 +5,14 @@ Could not get the installtion for [Pnoniebox](https://www.iphone-ticker.de/woche
 to work so here is the code for a simple version of RFID card enabled MP3 players on a Raspberry Pi.
 
 ## Setup
-
+```
 sudo apt install vim
 sudo apt install ipython3
 sudo apt install python3-pip
 sudo apt install evtest
 sudo pip3 install evdev
 sudo pip3 install python-vlc
+```
 
 ## How to determine device path for USB RFID reader
 
