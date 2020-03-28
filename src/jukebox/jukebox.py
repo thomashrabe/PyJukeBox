@@ -5,23 +5,16 @@ import argparse
 import logging
 import subprocess
 import datetime
+import vlc
+import time
 
 from evdev import InputDevice, categorize, ecodes
 
 from db import read_jbdb
 
+class JukeBox(object):
 
-class JukeBoxState(object):
-    """
-    Stores a the jukebox state
-    """
-
-    CURRENTLY_PLAYING = False
-    CURRENT_AUDIO_FILE = None
-    LAST_USER_ACTION = None
     MIN_TIME_BETWEEN_SWIPES_IN_SEC = 10
-
-class JukeBox(JukeBoxState):
 
     def __init__(self, device_path: str, db_path: str):
         """
@@ -33,6 +26,9 @@ class JukeBox(JukeBoxState):
         self._db_path = db_path
         self._logger = logging.Logger(name="JukeBox Logger")
         self._logger.setLevel(logging.INFO)
+        self._vlcInstance = vlc.Instance()
+        self._vlc_player = self._vlcInstance.media_player_new()
+        self._last_user_action = None
 
     def start(self):
         """
@@ -78,26 +74,35 @@ class JukeBox(JukeBoxState):
                         trigger_action = False
                         event_strings = []
 
-
-    def play_file(self, sound_file_path: str):
+    def _vlc_play(self, sound_file_path: str) -> None:
         """
         :param sound_file_path:
         """
 
-        vlc_command = '/usr/bin/cvlc {}'.format(sound_file_path)
+        msg = 'Playing {}'.format(sound_file_path)
+        self._logger.warning(msg)
 
-        self.CURRENTLY_PLAYING = True
-        self.CURRENT_AUDIO_FILE = sound_file_path
+        self._vlc_player.set_mrl(sound_file_path)
+        self._vlc_player.play()
+
+
+    def play_file(self, sound_file_path: str) -> None:
+        """
+        :param sound_file_path:
+        """
+
+        if self._vlc_player.is_playing() and not self._check_rfid_swipe_is_valid():
+            logging.warning('RFID swipe too quick')
+            return
+
+        self._last_user_action = datetime.datetime.now()
+
+        self._logger.warning(msg)
+
         self.LAST_USER_ACTION = datetime.datetime.now()
 
-        msg = 'Playing {}'.format(sound_file_path)
-        self._logger.info(msg)
-        subprocess.run(vlc_command, shell=True, capture_output=True)
-        msg = 'Finished {}'.format(sound_file_path)
-        self._logger.info(msg)
-
-        self.CURRENTLY_PLAYING = False
-        self.CURRENT_AUDIO_FILE = None
+        self._vlc_play(sound_file_path)
+        time.sleep(0.1)
 
     def play_playlist(self, sound_files: str):
         """
@@ -140,12 +145,22 @@ class JukeBox(JukeBoxState):
         
         if sound_file_path is not None:
 
-            logging.warn("Recieved code {} - {}".format(code, sound_file_path))
+            logging.warning("Recieved code {} - {}".format(code, sound_file_path))
 
             if type(sound_file_path) == list:
                 self.play_playlist(sound_file_path)
             elif type(sound_file_path) == str:
                 self.play_file(sound_file_path)
+
+    def _check_rfid_swipe_is_valid(self):
+        """
+        Determines whether time at call is outside of miminum swipe time interval
+        """
+
+        now = datetime.datetime.now()
+        difference = now - self._last_user_action
+
+        return difference.total_seconds() > self.MIN_TIME_BETWEEN_SWIPES_IN_SEC
 
 if __name__ == '__main__':
 
