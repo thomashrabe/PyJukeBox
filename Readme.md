@@ -25,3 +25,11 @@ Create a JSON file of the format
     "RFID_CODE" : "/path/to/a/audio/file.mp3"
 }
 ```
+
+## Start JukeBox
+```
+<install_path>/jukebox.py --db <your_db>.jdbd -i /dev/event/rfid_reader_id
+```
+
+## To Come
+Run JukeBox as a daemon at startup
