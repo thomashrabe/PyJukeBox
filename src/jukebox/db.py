@@ -33,7 +33,12 @@ def add_new_file(db_file_path: str, code: str, new_data_path:str) -> None:
     if os.path.isfile(new_data_path):
         db[code] = new_data_path
     elif os.path.isdir(new_data_path):
-        files = glob.glob(os.path.join(new_data_path, '*.mp3'))
+        files1 = glob.glob(os.path.join(new_data_path, '*.mp3'))
+        files2 = glob.glob(os.path.join(new_data_path, '*.m4a'))
+        files3 = glob.glob(os.path.join(new_data_path, '*.MP3'))
+
+        files = files1 + files2 + files3
+
         new_files = []
         for a_file in files:
             new_file_path = os.path.abspath(a_file)
@@ -42,7 +47,7 @@ def add_new_file(db_file_path: str, code: str, new_data_path:str) -> None:
         db[code] = new_files
 
     with open(db_file_path, 'w') as f:
-        json.dump(db, f)
+        json.dump(db, f, sort_keys=True, indent=4, separators=(',', ': '))
 
 
 
