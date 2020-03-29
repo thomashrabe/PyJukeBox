@@ -129,7 +129,6 @@ class JukeBox(object):
         Plays a list of sound files
         :param sound_files: list of files
         """
-        import pdb; pdb.set_trace()
 
         if len(self._playlist) > 0:
             sound_file = self._playlist.pop(0)
