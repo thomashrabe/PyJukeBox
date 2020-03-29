@@ -169,11 +169,14 @@ class JukeBox(object):
 
             logging.warning("Recieved code {} - {}".format(code, sound_file_path))
 
-            if type(sound_file_path) == list:
-                self._playlist = sound_file_path
-                self.play_playlist()
-            elif type(sound_file_path) == str:
-                self.play_file(sound_file_path)
+            if sound_file_path == 'STOP':
+                self.stop()
+            else:
+                if type(sound_file_path) == list:
+                    self._playlist = sound_file_path
+                    self.play_playlist()
+                elif type(sound_file_path) == str:
+                    self.play_file(sound_file_path)
 
     def _check_rfid_swipe_is_valid(self):
         """
@@ -233,6 +236,16 @@ class JukeBox(object):
         code = self.convert_event_strings_to_code(event_strings)
         logging.warning('Adding new code {} and file {}'.format(code, sound_file_path))
         db.add_new_file(self._db_path, code, sound_file_path)
+
+
+    def stop(self):
+        """
+        Stop jukebox
+        """
+
+        if self._vlc_player.is_playing():
+            self._playlist = None
+            self._vlc_player.stop()
 
 
 if __name__ == '__main__':
