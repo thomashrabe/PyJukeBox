@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import argparse
 import logging
 import subprocess
@@ -28,6 +29,7 @@ class JukeBox(object):
         self._vlcInstance = vlc.Instance()
         self._vlc_player = self._vlcInstance.media_player_new()
         self._last_user_action = None
+        self._playlist = None
 
     def start(self):
         """
@@ -59,31 +61,42 @@ class JukeBox(object):
         trigger_action = False
         event_strings = []
 
-        # This is an infinite loop
-        for event in device.read_loop():
-            if event.type == ecodes.EV_KEY:
+        # Run process loop forever
+        while True:
+            try:
+                # read will raise BlockingIOError if no RFID chip 
+                # is read
+                for event in device.read():
+                    if event.type == ecodes.EV_KEY:
 
-                event_string = str(categorize(event))
+                        event_string = str(categorize(event))
 
-                event_strings.append(event_string)
+                        event_strings.append(event_string)
 
-                if not chip_swiped and '11 (KEY_0), down' in event_string:
-                    chip_swiped = True
+                        if not chip_swiped and '11 (KEY_0), down' in event_string:
+                            chip_swiped = True
 
-                if chip_swiped and '28 (KEY_ENTER), up' in event_string:
-                    chip_swiped = False
-                    trigger_action = True
+                        if chip_swiped and '28 (KEY_ENTER), up' in event_string:
+                            chip_swiped = False
+                            trigger_action = True
 
-                if trigger_action:
-                    try:
-                        self.on_user_card_swipe(event_strings)
-                    except Exception as e:
-                        self._logger.error('Failed trigger action')
-                        self._logger.error(e)
-                    finally:
-                        chip_swiped = False
-                        trigger_action = False
-                        event_strings = []
+                        if trigger_action:
+                            try:
+                                self.on_user_card_swipe(event_strings)
+                            except Exception as e:
+                                self._logger.error('Failed trigger action')
+                                self._logger.error(e)
+                            finally:
+                                chip_swiped = False
+                                trigger_action = False
+                                event_strings = []
+            except BlockingIOError:
+                pass
+
+            if not self._vlc_player.is_playing() and self._playlist is not None:
+                self.play_playlist()
+
+            time.sleep(0.1)
 
     def _vlc_play(self, sound_file_path: str) -> None:
         """
@@ -111,13 +124,16 @@ class JukeBox(object):
         self._vlc_play(sound_file_path)
         time.sleep(0.1)
 
-    def play_playlist(self, sound_files: str):
+    def play_playlist(self) -> None:
         """
         Plays a list of sound files
         :param sound_files: list of files
         """
+        import pdb; pdb.set_trace()
 
-        for sound_file in sound_files:
+        if len(self._playlist) > 0:
+            sound_file = self._playlist.pop(0)
+
             self.play_file(sound_file)
 
     def convert_event_strings_to_code(self, event_strings: [str]) -> str:
@@ -155,7 +171,8 @@ class JukeBox(object):
             logging.warning("Recieved code {} - {}".format(code, sound_file_path))
 
             if type(sound_file_path) == list:
-                self.play_playlist(sound_file_path)
+                self._playlist = sound_file_path
+                self.play_playlist()
             elif type(sound_file_path) == str:
                 self.play_file(sound_file_path)
 
