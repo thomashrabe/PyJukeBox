@@ -197,7 +197,7 @@ class JukeBox(object):
 
                 if trigger_action:
                     try:
-                        import pdb; pdb.set_trace()
+
                         self._add_new_sound_file(event_strings, sound_file_path)
                         self._logger.warning('{} added to JukeBox DB {}'.format(
                             sound_file_path, self._db_path))
@@ -215,6 +215,7 @@ class JukeBox(object):
         """
 
         code = self.convert_event_strings_to_code(event_strings)
+        logging.warning('Adding new code {} and file {}'.format(code, sound_file_path))
         db.add_new_file(self._db_path, code, sound_file_path)
 
 
