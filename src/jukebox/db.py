@@ -2,7 +2,7 @@ import os
 import json
 import glob
 
-def read_jbdb(db_file_path: str) -> None:
+def read_jbdb(db_file_path: str) -> {}:
     """
     Reads JukeBox db file
     :param db_file_path:
@@ -50,4 +50,14 @@ def add_new_file(db_file_path: str, code: str, new_data_path:str) -> None:
         json.dump(db, f, sort_keys=True, indent=4, separators=(',', ': '))
 
 
+def lookup_item_for_rfid_code(rfid_code: str, db_file_path: str) -> str:
+    """
+    Returns items stored in DB behind RFID code
+    :param rfid_code:
+    :param db_file_path:
+    :return:
+    """
+
+    db = read_jbdb(db_file_path)
+    return db.get(rfid_code)
 
