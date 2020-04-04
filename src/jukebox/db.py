@@ -61,3 +61,10 @@ def lookup_item_for_rfid_code(rfid_code: str, db_file_path: str) -> str:
     db = read_jbdb(db_file_path)
     return db.get(rfid_code)
 
+def get_confirmation_sound_path(db_file_path: str):
+    """
+    Returns path to confirmation sound
+    :param db_file_path:
+    """
+    db = read_jbdb(db_file_path)
+    return db.get('confirmation')
