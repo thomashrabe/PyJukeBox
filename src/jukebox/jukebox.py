@@ -161,7 +161,7 @@ class JukeBox(object):
 
         code = self.convert_event_strings_to_code(event_strings)
 
-        sound_file_path = db.lookup_item_for_rfid_code(code)
+        sound_file_path = db.lookup_item_for_rfid_code(code, self._db_path)
 
         if sound_file_path is not None:
 
@@ -170,11 +170,21 @@ class JukeBox(object):
             if sound_file_path == 'STOP':
                 self.stop()
             else:
+                self.play_confirmation_sound()
+
                 if type(sound_file_path) == list:
                     self._playlist = sound_file_path
                     self.play_playlist()
                 elif type(sound_file_path) == str:
                     self.play_file(sound_file_path)
+
+    def play_confirmation_sound(self):
+        """
+        Plays confirmation sound on card swipe before playing an item
+        """
+        confirmation_sound_path = db.get_confirmation_sound_path(self._db_path)
+        self._vlc_play(confirmation_sound_path)
+        time.sleep(0.1)
 
     def _check_rfid_swipe_is_valid(self):
         """
