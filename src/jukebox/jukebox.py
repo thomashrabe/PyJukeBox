@@ -10,7 +10,7 @@ import time
 
 from evdev import InputDevice, categorize, ecodes
 
-import db 
+import db
 
 class JukeBox(object):
 
@@ -161,10 +161,8 @@ class JukeBox(object):
 
         code = self.convert_event_strings_to_code(event_strings)
 
-        jbdb = db.read_jbdb(self._db_path)
+        sound_file_path = db.lookup_item_for_rfid_code(code)
 
-        sound_file_path = jbdb.get(code)
-        
         if sound_file_path is not None:
 
             logging.warning("Recieved code {} - {}".format(code, sound_file_path))
