@@ -126,7 +126,8 @@ class JukeBox(object):
 
     def play_playlist(self) -> None:
         """
-        Plays a list of sound files
+        Plays a list of sound files, skips to next song
+        if same playlist is selected repeatedly
         :param sound_files: list of files
         """
 
