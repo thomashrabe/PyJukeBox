@@ -169,6 +169,7 @@ class JukeBox(object):
 
             if sound_file_path == 'STOP':
                 self.stop()
+                self.play_confirmation_sound()
             else:
                 self.play_confirmation_sound()
 
@@ -228,7 +229,7 @@ class JukeBox(object):
                         self._add_new_sound_file(event_strings, sound_file_path)
                         self._logger.warning('{} added to JukeBox DB {}'.format(
                             sound_file_path, self._db_path))
-
+                        self.play_confirmation_sound()
                     except Exception as e:
                         self._logger.error('Failed adding new sound file')
                         self._logger.error(e)
