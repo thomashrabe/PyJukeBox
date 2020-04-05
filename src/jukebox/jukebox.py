@@ -119,6 +119,8 @@ class JukeBox(object):
             logging.warning('RFID swipe too quick')
             return
 
+        self.play_confirmation_sound()
+
         self._last_user_action = datetime.datetime.now()
 
         self._vlc_play(sound_file_path)
@@ -146,7 +148,7 @@ class JukeBox(object):
                     if index < len(self._playlist) - 1:
                         # If there's at least one more track after the current
                         # play the next song
-                        sound_file = self._playlist.pop(index)
+                        sound_file = self._playlist.pop(index + 1)
                     else:
                         # Do nothing
                         return
@@ -195,7 +197,6 @@ class JukeBox(object):
                 self.stop()
                 self.play_confirmation_sound()
             else:
-                self.play_confirmation_sound()
 
                 if type(sound_file_path) == list:
                     self._playlist = sound_file_path
@@ -209,7 +210,7 @@ class JukeBox(object):
         """
         confirmation_sound_path = db.get_confirmation_sound_path(self._db_path)
         self._vlc_play(confirmation_sound_path)
-        time.sleep(0.1)
+        time.sleep(2)
 
     def _check_rfid_swipe_is_valid(self):
         """
