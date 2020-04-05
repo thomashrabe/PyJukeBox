@@ -119,6 +119,8 @@ class JukeBox(object):
             logging.warning('RFID swipe too quick')
             return
 
+        self.play_confirmation_sound()
+
         self._last_user_action = datetime.datetime.now()
 
         self._vlc_play(sound_file_path)
@@ -126,12 +128,36 @@ class JukeBox(object):
 
     def play_playlist(self) -> None:
         """
-        Plays a list of sound files
+        Plays a list of sound files, skips to next song
+        if same playlist is selected repeatedly
         :param sound_files: list of files
         """
 
         if len(self._playlist) > 0:
-            sound_file = self._playlist.pop(0)
+
+            sound_file = None
+            if self._vlc_player.is_playing():
+                # skip to song after current song same playlist 
+                # was selected again
+                current_media = self._vlc_player.get_media()
+                current_mrl = current_media.get_mrl().replace('file://', '')
+
+                # compare if current track is in playlist
+                if current_mrl in self._playlist:
+                    index = self._playlist.index(current_mrl)
+                    if index < len(self._playlist) - 1:
+                        # If there's at least one more track after the current
+                        # play the next song
+                        sound_file = self._playlist.pop(index + 1)
+                    else:
+                        # Do nothing
+                        return
+                else:
+                    # Play first song of new playlist
+                    sound_file = self._playlist.pop(0)
+            else:
+                # Start with the first song if is currenly not playing
+                sound_file = self._playlist.pop(0)
 
             self.play_file(sound_file)
 
@@ -171,7 +197,6 @@ class JukeBox(object):
                 self.stop()
                 self.play_confirmation_sound()
             else:
-                self.play_confirmation_sound()
 
                 if type(sound_file_path) == list:
                     self._playlist = sound_file_path
@@ -185,7 +210,7 @@ class JukeBox(object):
         """
         confirmation_sound_path = db.get_confirmation_sound_path(self._db_path)
         self._vlc_play(confirmation_sound_path)
-        time.sleep(0.1)
+        time.sleep(2)
 
     def _check_rfid_swipe_is_valid(self):
         """
