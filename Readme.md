@@ -2,7 +2,7 @@
 
 Inspired by Toniebox but too cheap to buy one. Too much of a nerd to say I can build myself!
 Could not get the installtion for [Pnoniebox](https://www.iphone-ticker.de/wochenend-projekt-kontaktlose-musikbox-fuer-kinder-123063/) to work so , bored by COVID19 lockdown here is a simple Python engine for RFID card enabled MP3 players on a Raspberry Pi.
-
+![Jukebox in use](./images/running.jpg "Running the jukebox")
 
 ## Requirements - Hardware and Software
 Here's a list of required hardware with Amazon links that I purchased. They can vary I think, especially the Raspberry Pi and the speaker.
@@ -44,7 +44,7 @@ into
 *(Note, the above path is for Macs, the mounted MicroSD might be in a different location if you are on Windows or Linux)*
 
 The Rapsberry with the now configured MicroSD should now be accessible through the your Wifi. 
-Now, connect through `ssh pi@REPLACE_PI_IP_HERE`.
+Connect through `ssh pi@REPLACE_PI_IP_HERE`. The default `pi` password on `Buster` is `raspberry`.
 
 
 Now, on the PI install the dependencies
