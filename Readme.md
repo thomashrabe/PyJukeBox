@@ -1,8 +1,8 @@
 # PyJukeBox
 
-Inspired by Toniebox but too cheap to buy one. Too much of a nerd to say I can build myself!
+Inspired by Toniebox but too cheap to buy one. Can not resist building your own?
 Could not get the installtion for [Pnoniebox](https://www.iphone-ticker.de/wochenend-projekt-kontaktlose-musikbox-fuer-kinder-123063/) to work so , bored by COVID19 lockdown here is a simple Python engine for RFID card enabled MP3 players on a Raspberry Pi.
-
+![Jukebox in use](./images/running.jpg "Running the jukebox")
 
 ## Requirements - Hardware and Software
 Here's a list of required hardware with Amazon links that I purchased. They can vary I think, especially the Raspberry Pi and the speaker.
@@ -12,7 +12,7 @@ Here's a list of required hardware with Amazon links that I purchased. They can 
 3. [USB Speaker](https://www.amazon.com/gp/product/B075M7FHM1/ref=ppx_yo_dt_b_asin_title_o03_s00?ie=UTF8&psc=1) I was reading the 3.5 Rasbperry output usuall had a hum, so I opeted for the digital USB speaker solution.
 4. [MicroSD](https://www.amazon.com/gp/product/B073JWXGNT/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1)
 5. [PI Cover](https://www.amazon.com/gp/product/B07TTRHZF9/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1)
-6. [RFID Cards](https://www.amazon.com/gp/product/B07DPFPQ49/ref=ppx_yo_dt_b_asin_title_o03_s02?ie=UTF8&psc=1) , I think you can also use RFID FOBs ans attache them to stuffed animals.
+6. [RFID Cards](https://www.amazon.com/gp/product/B07DPFPQ49/ref=ppx_yo_dt_b_asin_title_o03_s02?ie=UTF8&psc=1) , I think you can also use RFID FOBs ans attach them to stuffed animals. But we opted for cards because you can paint on them.
 7. A box / container for the final Jukebox. We used a old gift box because of COVID19 lockdown, but planned to go through antigque shops for nicer solutions.
 ![Jukebox interior](./images/interior.jpg "The Jukebox Interior")
 RFID cards allow to customize the cards in any way you like.
@@ -44,7 +44,7 @@ into
 *(Note, the above path is for Macs, the mounted MicroSD might be in a different location if you are on Windows or Linux)*
 
 The Rapsberry with the now configured MicroSD should now be accessible through the your Wifi. 
-Now, connect through `ssh pi@REPLACE_PI_IP_HERE`.
+Connect through `ssh pi@REPLACE_PI_IP_HERE`. The default `pi` password on `Buster` is `raspberry`.
 
 
 Now, on the PI install the dependencies
