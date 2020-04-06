@@ -1,7 +1,7 @@
 # PyJukeBox
 
 Inspired by Toniebox but too cheap to buy one. Can not resist building your own?
-Could not get the installtion for [Pnoniebox](https://www.iphone-ticker.de/wochenend-projekt-kontaktlose-musikbox-fuer-kinder-123063/) to work so , bored by COVID19 lockdown here is a simple Python engine for RFID card enabled MP3 players on a Raspberry Pi.
+Could not get the installtion for [Phoniebox](https://www.iphone-ticker.de/wochenend-projekt-kontaktlose-musikbox-fuer-kinder-123063/) to work so , bored by COVID19 lockdown here is a simple Python engine for RFID card enabled MP3 players on a Raspberry Pi.
 ![Jukebox in use](./images/running.jpg "Running the jukebox")
 
 ## Requirements - Hardware and Software
