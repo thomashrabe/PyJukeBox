@@ -42,7 +42,7 @@ class JukeBox(object):
         jukebox_path = os.path.join(user_home, '.jukebox')
         os.mkdir(jukebox_path, mode=0o700)
         music_path = os.path.join(jukebox_path, 'Music')
-        os.mkdir(music_path mode=0o700)
+        os.mkdir(music_path, mode=0o700)
 
         confirmation_mp3_path = os.path.join(package_path,
                                              'data',
