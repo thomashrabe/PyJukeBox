@@ -94,7 +94,7 @@ class JukeBox(object):
                 pass
 
             if not self._vlc_player.is_playing() and self._playlist is not None:
-                self.play_playlist()
+                self.play_playlist(play_confirmation=False)
 
             time.sleep(0.1)
 
@@ -110,27 +110,30 @@ class JukeBox(object):
         self._vlc_player.play()
 
 
-    def play_file(self, sound_file_path: str) -> None:
+    def play_file(self,
+                  sound_file_path: str,
+                  play_confirmation: bool=False) -> None:
         """
         :param sound_file_path:
+        :param play_confirmation: Whether to play confirmation sound or not
         """
 
         if self._vlc_player.is_playing() and not self._check_rfid_swipe_is_valid():
             logging.warning('RFID swipe too quick')
             return
-
-        self.play_confirmation_sound()
+        if play_confirmation:
+            self.play_confirmation_sound()
 
         self._last_user_action = datetime.datetime.now()
 
         self._vlc_play(sound_file_path)
         time.sleep(0.1)
 
-    def play_playlist(self) -> None:
+    def play_playlist(self, play_confirmation: bool=False) -> None:
         """
         Plays a list of sound files, skips to next song
         if same playlist is selected repeatedly
-        :param sound_files: list of files
+        :param play_confirmation: Whether to play confirmation sound or not
         """
 
         if len(self._playlist) > 0:
@@ -159,7 +162,8 @@ class JukeBox(object):
                 # Start with the first song if is currenly not playing
                 sound_file = self._playlist.pop(0)
 
-            self.play_file(sound_file)
+            self.play_file(sound_file,
+                           play_confirmation=play_confirmation)
 
     def convert_event_strings_to_code(self, event_strings: [str]) -> str:
         """
@@ -200,9 +204,10 @@ class JukeBox(object):
 
                 if type(sound_file_path) == list:
                     self._playlist = sound_file_path
-                    self.play_playlist()
+                    self.play_playlist(play_confirmation=True)
                 elif type(sound_file_path) == str:
-                    self.play_file(sound_file_path)
+                    self.play_file(sound_file_path,
+                                   play_confirmation=True)
 
     def play_confirmation_sound(self):
         """
