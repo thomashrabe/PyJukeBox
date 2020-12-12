@@ -313,3 +313,4 @@ if __name__ == '__main__':
         jukebox.add_new_mp3(args.a)
     else:
         jukebox.start()
+
