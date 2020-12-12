@@ -68,3 +68,4 @@ def get_confirmation_sound_path(db_file_path: str):
     """
     db = read_jbdb(db_file_path)
     return db.get('confirmation')
+
