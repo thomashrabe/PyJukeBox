@@ -50,6 +50,15 @@ def add_new_file(db_file_path: str, code: str, new_data_path:str) -> None:
         json.dump(db, f, sort_keys=True, indent=4, separators=(',', ': '))
 
 
+def get_fail_sound() -> str:
+    """
+    Returns path to fail sound
+    """
+    import pdb; pdb.set_trace()
+    here = os.path.dirname(os.path.abspath(__file__))
+    fail_path = os.path.join(here, '..', 'assets', 'fail.mp3')
+    return fail_path
+
 def lookup_item_for_rfid_code(rfid_code: str, db_file_path: str) -> str:
     """
     Returns items stored in DB behind RFID code
@@ -57,14 +66,19 @@ def lookup_item_for_rfid_code(rfid_code: str, db_file_path: str) -> str:
     :param db_file_path:
     :return:
     """
+    try:
+        db = read_jbdb(db_file_path)
+        return db.get(rfid_code)
+    except:
+        return get_fail_sound()
 
-    db = read_jbdb(db_file_path)
-    return db.get(rfid_code)
-
-def get_confirmation_sound_path(db_file_path: str):
+def get_confirmation_sound_path(db_file_path: str) -> str:
     """
     Returns path to confirmation sound
     :param db_file_path:
     """
-    db = read_jbdb(db_file_path)
-    return db.get('confirmation')
+    try:
+        db = read_jbdb(db_file_path)
+        return db.get('confirmation')
+    except:
+        return get_fail_sound()
