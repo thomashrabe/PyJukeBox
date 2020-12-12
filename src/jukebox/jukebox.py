@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import shutil
 import argparse
 import logging
 import subprocess
@@ -30,6 +31,30 @@ class JukeBox(object):
         self._vlc_player = self._vlcInstance.media_player_new()
         self._last_user_action = None
         self._playlist = None
+
+    def init(self):
+        """
+        Initialize a db json in ~/.jukebox and create subdirectories there
+        """
+        package_path = os.path.dirname(os.path.realpath(__file__))
+
+        user_home = os.path.expanduser("~")
+        jukebox_path = os.path.join(user_home, '.jukebox')
+        os.mkdir(jukebox_path, mode=0o700)
+        music_path = os.path.join(jukebox_path, 'Music')
+        os.mkdir(music_path, mode=0o700)
+
+        confirmation_mp3_path = os.path.join(package_path,
+                                             'data',
+                                             'confirmation_sound.mp3')
+
+        confirmation_destination = os.path.join(music_path,
+                                                'confirmation_sound,mp3')
+        shutil.copyfile(confirmation_mp3_path,
+                        confirmation_destination)
+
+        jdbd_path = os.path.join(jukebox_path, 'jdbd.json')
+        db.init_jbdj(jdbd_path, confirmation_destination)
 
     def start(self):
         """
@@ -305,12 +330,18 @@ if __name__ == '__main__':
                         type=str,
                         help='Add new mp3 to library. Specify mp3 path, then swipe RFID card')
 
+    parser.add_argument(['--init'],
+                        action='store_true',
+                        help='Initialize a folder with db.json.')
+
     args = parser.parse_args()
 
     jukebox = JukeBox(args.i, args.db)
 
     if args.a is not None:
         jukebox.add_new_mp3(args.a)
+    elif args.init:
+        jukebox.init_folder()
     else:
         jukebox.start()
 

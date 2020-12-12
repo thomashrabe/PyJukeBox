@@ -2,6 +2,23 @@ import os
 import json
 import glob
 
+def init_jbdj(db_file_path: str, confirmation_mp3_path: str) -> {}:
+    """
+    Reads JukeBox db file
+    :param db_file_path:
+    :param confirmation_mp3_path:
+    """
+
+    if os.path.exists(db_file_path):
+        raise IOError('DB file already exists!')
+
+    with open(db_file_path, 'w') as f:
+        json.dump({}, f)
+
+    add_new_file(db_file_path,
+                 'confirmation',
+                  confirmation_mp3_path)
+
 def read_jbdb(db_file_path: str) -> {}:
     """
     Reads JukeBox db file
