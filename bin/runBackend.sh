@@ -8,4 +8,4 @@ JUKEBOX_BACKEND=$HERE/../src/backend
 export PYTHONPATH=$JUKEBOX_SRC:$PYTHONPATH
 
 cd $JUKEBOX_BACKEND
-uvicorn main:jukeboxBackend --reload
+uvicorn main:jukeboxBackend --reload --host 0.0.0.0
