@@ -4,6 +4,8 @@
 
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 JUKEBOX_SRC=$HERE/../src
+JUKEBOX_BACKEND=$HERE/../src/backend
 export PYTHONPATH=$JUKEBOX_SRC:$PYTHONPATH
 
-$JUKEBOX_SRC/jukebox/jukebox.py --db /home/pi/.jukebox/db.jbdb
+cd $JUKEBOX_BACKEND
+uvicorn main:jukeboxBackend --reload
