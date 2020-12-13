@@ -2,9 +2,15 @@
 
 from fastapi import FastAPI
 
-app = FastAPI()
+from jukebox.db import read_jbdb
 
-@app.get("/")
+jukeboxBackend = FastAPI()
+
+@jukeboxBackend.get("/")
 async def root():
     return {"message": "PyJukebox"}
+
+@jukeboxBackend.get("/db")
+async def read_db():
+    return read_jbdb('/jukebox/db.jbdb')
 
