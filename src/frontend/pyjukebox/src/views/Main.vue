@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import PyJukeboxMain from '@/components/PyJukeboxMain.vue' // @ is an alias to /src
+import { Component, Vue } from "vue-property-decorator"
+import PyJukeboxMain from "@/components/PyJukeboxMain.vue" // @ is an alias to /src
 
 @Component({
-  components: {
-    PyJukeboxMain
-  }
+    components: {
+        PyJukeboxMain
+    }
 })
 export default class Main extends Vue {}
 </script>

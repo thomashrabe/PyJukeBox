@@ -1,7 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
+export class DBProvider {
+    static config = {
+        baseURL: "http://localhost:8000"
+    }
 
-export class DBProvider{
-    static requestDB(): any{
-        return axios.get('http://localhost:8000/db');
+    static requestDB() {
+        const client = axios.create(DBProvider.config);
+        return client.get("/db");
     }
 }

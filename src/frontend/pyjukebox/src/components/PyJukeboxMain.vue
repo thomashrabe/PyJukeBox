@@ -1,14 +1,22 @@
 <template>
   <div class="hello">
-    Test
+    {{ }}
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from "vue-property-decorator";
+import { DBProvider} from "../providers/dbProvider";
 
 @Component
 export default class PyJukeboxMain extends Vue {
+
+    constructor(){
+        super();
+        DBProvider.requestDB().then( result => {
+            console.log(result);
+        });
+    }
 }
 </script>
 
