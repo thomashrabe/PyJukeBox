@@ -30,6 +30,10 @@
             "error",
             "unix"
         ],
+        "quotes": [
+            "warn",
+            "double"
+        ],
         "semi": "warn",
         "no-unused-vars": "warn"
     }
