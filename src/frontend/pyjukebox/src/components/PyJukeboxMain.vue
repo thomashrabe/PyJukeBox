@@ -1,20 +1,31 @@
 <template>
     <div>
-        <b-table striped hover :items="jukeboxDB" :fields="['container', 'card_id']">
-            <!-- <b-tr v-for="jbFolder in jukeboxDB" :key="jbFolder.card_id">
-                <b-td>
-                    {{ jbFolder.container }}
-                </b-td>
-            </b-tr> -->
+        <b-table striped hover :items="jukeboxDB" :fields="['container', 'card_id', 'show_details']">
+            <template #cell(show_details)="row">
+                <b-button variant="outline-primary" size="sm" @click="row.toggleDetails" class="mr-2">
+                    <b-icon-chevron-expand v-if=" !row.detailsShowing "></b-icon-chevron-expand>
+                    <b-icon-chevron-contract v-if=" row.detailsShowing "></b-icon-chevron-contract>
+                </b-button>
+            </template>
+
+            <template #row-details="row">
+                <b-list-group v-for="aFile in row.item.files" :key="aFile">
+                    <b-list-group-item>
+                        {{ formatFileName(aFile) }}
+                    </b-list-group-item>
+                </b-list-group>
+            </template>
+
         </b-table>
-        <b-button type="submit" variant="primary">asdf</b-button>
+
+        <b-button type="submit" variant="primary">Upload</b-button>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { DBProvider} from "../providers/dbProvider";
-import { JBFolder } from "../classes/JukeboxDB";
+import { JBFolder, PATH_SEPERATOR  } from "../classes/JukeboxDB"; 
 
 @Component
 export default class PyJukeboxMain extends Vue {
@@ -36,6 +47,11 @@ export default class PyJukeboxMain extends Vue {
             this.jukeboxDB = JBFolder.JBFolderGenerator(result.data);
 
         });
+    }
+
+    public formatFileName(fileName: string){
+        const parts: string[] = fileName.split('/');
+        return parts[parts.length - 1];
     }
 
 }

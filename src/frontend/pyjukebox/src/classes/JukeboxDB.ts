@@ -1,5 +1,5 @@
 
-const PATH_SEPERATOR = '/';
+export const PATH_SEPERATOR = '/';
 
 
 export class JBFolder{
@@ -13,7 +13,7 @@ export class JBFolder{
 
         Object.keys(jsonData).forEach((key: string) => {
             const files = jsonData[key];
-            if ( 'STOP' === files){
+            if ( 'STOP' === files || 'confirmation' === key){
                 0;
             } else {
                 folders.push(new JBFolder(files, key));

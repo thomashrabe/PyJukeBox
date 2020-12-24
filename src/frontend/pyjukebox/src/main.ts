@@ -20,3 +20,4 @@ new Vue({
     router,
     render: x => x(App)
 }).$mount('#app')
+
