@@ -32,18 +32,26 @@ async def read_db():
 
 @jukeboxBackend.get("/addFolder/{folder_name}")
 async def add_folder(folder_name: str):
+    print('Add folder')
+    print(folder_name)
     return jb_music_path_for_folder(folder_name)
 
 @jukeboxBackend.post("/addFile/{folder_name}/{file_name}")
 async def add_folder(folder_name: str):
+    print('Add file')
+    print(file_name)
     return jb_music_path_for_folder(folder_name)
 
 @jukeboxBackend.get("/rmFolder/{folder_name}")
 async def rm_folder(folder_name: str):
+    print('Rm folder')
+    print(folder_name)
     return jb_music_path_for_folder(folder_name)
 
 @jukeboxBackend.get("/rmFile/{folder_name}/{file_name}")
 async def rm_file(folder_name: str, file_name: str):
+    print('Rm file')
+    print(file_name)
     return jb_music_path_for_folder(folder_name)
 
 @jukeboxBackend.get("/assignRFID/{folder_name}")

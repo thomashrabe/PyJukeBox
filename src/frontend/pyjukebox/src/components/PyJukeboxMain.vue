@@ -2,13 +2,13 @@
     <div>
         <b-table striped hover :items="jukeboxDB" :fields="['container', 'card_id', 'show_details']">
             <template #cell(show_details)="row">
-                <b-button variant="outline-primary" size="sm" @click="addFileToFolder(row.index)">
-                    <b-icon-plus-circle></b-icon-plus-circle>
-                </b-button>
-                &nbsp;
                 <b-button variant="outline-primary" size="sm" @click="row.toggleDetails" class="mr-2">
                     <b-icon-chevron-expand v-if=" !row.detailsShowing "></b-icon-chevron-expand>
                     <b-icon-chevron-contract v-if=" row.detailsShowing "></b-icon-chevron-contract>
+                </b-button>
+                &nbsp;
+                <b-button variant="outline-primary" size="sm" @click="addFileToFolder(row.index)">
+                    <b-icon-file-plus></b-icon-file-plus>
                 </b-button>
             </template>
 
@@ -16,6 +16,9 @@
                 <b-list-group v-for="aFile in row.item.files" :key="aFile">
                     <b-list-group-item>
                         {{ formatFileName(aFile) }}
+                        <b-button variant="outline-primary" size="sm">
+                            <b-icon-file-minus></b-icon-file-minus>
+                        </b-button>
                     </b-list-group-item>
                 </b-list-group>
             </template>
@@ -63,11 +66,16 @@ export default class PyJukeboxMain extends Vue {
 
     public addFileToFolder(dataIndex: number){
         const jbItem: JBFolder = this.jukeboxDB[dataIndex];
+
         console.log(jbItem);
     }
 
     public addFileToNewFolder(){
-        console.log('ASDF');
+        this.createNewFolder('test');
+    }
+
+    private createNewFolder(folderName: string){
+        DBProvider.createNewFolder(folderName);
     }
 
 }
