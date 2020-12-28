@@ -3,6 +3,9 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
+from config import (
+    jb_real_path_for_folder,
+    jb_music_path_for_folder)
 from jukebox.db import read_jbdb
 
 jukeboxBackend = FastAPI()
@@ -26,4 +29,8 @@ async def root():
 @jukeboxBackend.get("/db")
 async def read_db():
     return read_jbdb('/jukebox/db.jbdb')
+
+@jukeboxBackend.get("/addFolder/{folder_name}")
+async def read_db(folder_name: str):
+    return jb_music_path_for_folder(folder_name)
 
