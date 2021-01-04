@@ -6,7 +6,6 @@
                     <b-icon-chevron-expand v-if=" !row.detailsShowing "></b-icon-chevron-expand>
                     <b-icon-chevron-contract v-if=" row.detailsShowing "></b-icon-chevron-contract>
                 </b-button>
-                &nbsp;
                 <b-button variant="outline-primary" size="sm" @click="addFileToFolder(row.index)">
                     <b-icon-file-plus></b-icon-file-plus>
                 </b-button>
@@ -22,12 +21,33 @@
                     </b-list-group-item>
                 </b-list-group>
             </template>
-
         </b-table>
 
-        <b-button type="submit" variant="primary" v-on:click="addFileToNewFolder()">
-            Add new item
+        <b-button type="submit" variant="primary" @click="$bvModal.show('bv-modal-example')">
+            Add content
         </b-button>
+
+        <b-modal id="bv-modal-example" hide-footer>
+            <template #modal-title>
+                Upload new file
+            </template>
+
+            <!-- accept=".mp3, .m4a" -->
+            <b-form-file
+                v-model="files"
+                :state="Boolean(file1)"
+                placeholder="Choose an audio file..."
+                drop-placeholder="Or drop file here..."
+                multiple
+            ></b-form-file>
+            <p>{{ files ? files.names : ''}}</p>
+            <b-button class="mt-3" color='primary' block @click="uploadFiles()">
+                Upload
+            </b-button>
+            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">
+                Close Me
+            </b-button>
+        </b-modal>
 
     </div>
 </template>
@@ -40,15 +60,11 @@ import { JBFolder, PATH_SEPERATOR  } from "../classes/JukeboxDB";
 @Component
 export default class PyJukeboxMain extends Vue {
 
-    public jukeboxDB: JBFolder[];
-
-    public data = function() {
-        return {counter: 4};
-    };
+    public jukeboxDB: JBFolder[] = [];
+    public files: string[] = undefined;
 
     constructor(){
         super();
-        this.jukeboxDB = [];
     }
 
     mounted(){
@@ -72,6 +88,10 @@ export default class PyJukeboxMain extends Vue {
 
     public addFileToNewFolder(){
         this.createNewFolder('test');
+    }
+
+    public uploadFiles(){
+        console.log(this.files);
     }
 
     private createNewFolder(folderName: string){
