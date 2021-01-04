@@ -27,7 +27,7 @@
             Add content
         </b-button>
 
-        <b-modal id="bv-modal-example" hide-footer>
+        <b-modal id="bv-modal-example" hide-footer ref='fileModal'>
             <template #modal-title>
                 Upload new file
             </template>
@@ -83,7 +83,7 @@ export default class PyJukeboxMain extends Vue {
     public addFileToFolder(dataIndex: number){
         const jbItem: JBFolder = this.jukeboxDB[dataIndex];
 
-        console.log(jbItem);
+        this.$refs['fileModal'].show();
     }
 
     public addFileToNewFolder(){
