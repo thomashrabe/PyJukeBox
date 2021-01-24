@@ -23,11 +23,11 @@
             </template>
         </b-table>
 
-        <b-button type="submit" variant="primary" @click="$bvModal.show('bv-modal-example')">
+        <b-button type="submit" variant="primary" @click="$bvModal.show('bv-modal-folder')">
             Add content
         </b-button>
 
-        <b-modal id="bv-modal-example" hide-footer ref='fileModal'>
+        <b-modal id="bv-modal-files" hide-footer ref='fileModal'>
             <template #modal-title>
                 Upload new file
             </template>
@@ -35,7 +35,7 @@
             <!-- accept=".mp3, .m4a" -->
             <b-form-file
                 v-model="files"
-                :state="Boolean(file1)"
+                :state="Boolean(files)"
                 placeholder="Choose an audio file..."
                 drop-placeholder="Or drop file here..."
                 multiple
@@ -44,7 +44,20 @@
             <b-button class="mt-3" color='primary' block @click="uploadFiles()">
                 Upload
             </b-button>
-            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">
+            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-files')">
+                Close Me
+            </b-button>
+        </b-modal>
+
+        <b-modal id="bv-modal-folder" hide-footer ref='folderModal'>
+            <template #modal-title>
+                Add new folder
+            </template>
+            <b-form-input v-model="newFolderName" placeholder="Enter your name"></b-form-input>
+            <b-button class="mt-3" color='primary' block @click="createNewFolder()">
+                Add
+            </b-button>
+            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-folder')">
                 Close Me
             </b-button>
         </b-modal>
@@ -62,13 +75,15 @@ export default class PyJukeboxMain extends Vue {
 
     public jukeboxDB: JBFolder[] = [];
     public files: string[] = undefined;
+    public newFolderName: string = undefined;
+    public addFileToFolderIndex: number = undefined;
 
     constructor(){
         super();
     }
 
     mounted(){
-        DBProvider.requestDB().then( result => {
+        DBProvider.requestDB().then( (result) => {
 
             this.jukeboxDB = JBFolder.JBFolderGenerator(result.data);
 
@@ -81,21 +96,35 @@ export default class PyJukeboxMain extends Vue {
     }
 
     public addFileToFolder(dataIndex: number){
-        const jbItem: JBFolder = this.jukeboxDB[dataIndex];
-
+        this.addFileToFolderIndex = dataIndex;
         this.$refs['fileModal'].show();
     }
 
     public addFileToNewFolder(){
-        this.createNewFolder('test');
+        this.$refs['fileModal'].show();
     }
 
     public uploadFiles(){
-        console.log(this.files);
+        if ( this.newFolderName){
+            console.log('Upload files to new folder');
+            console.log('Finish with swipe card');
+            this.newFolderName = undefined;
+        } else {
+            console.log('Upload files to existing folder');
+            const jbFolder: JBFolder = this.jukeboxDB[this.addFileToFolderIndex];
+            DBProvider
+        }
     }
 
-    private createNewFolder(folderName: string){
-        DBProvider.createNewFolder(folderName);
+    public createNewFolder(){
+
+        DBProvider.createNewFolder(this.newFolderName).then(() => {
+
+            this.addFileToNewFolder();
+
+        }).catch((error) => {
+
+        });
     }
 
 }

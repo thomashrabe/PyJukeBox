@@ -31,12 +31,22 @@ export class DBProvider {
     }
 
     /**
+     * 
+     * @param files 
+     * @param folder 
+     */
+    static addFiles(files: File[], folder: string){
+        
+    }
+
+    /**
      * Call the backend to create a new folder
      * @param folder New folder name
+     * @param fileToRemove Which file to remove
      */
-    static rmFile(folder: string, file_to_remove: string){
+    static rmFile(folder: string, fileToRemove: string){
         const client = axios.create(DBProvider.config);
-        return client.get("/rmFolder/" + folder + '/' + file_to_remove);
+        return client.get("/rmFolder/" + folder + '/' + fileToRemove);
     }
 
     /**

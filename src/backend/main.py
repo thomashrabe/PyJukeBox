@@ -6,7 +6,8 @@ from fastapi import FastAPI
 from config import (
     jb_real_path_for_folder,
     jb_music_path_for_folder)
-from jukebox.db import read_jbdb
+from jukebox.db import (
+    read_jbdb, create_new_folder)
 
 jukeboxBackend = FastAPI()
 
@@ -22,6 +23,37 @@ jukeboxBackend.add_middleware(
     allow_headers=["*"],
 )
 
+def result_generator(result: str, msg: str) -> dict:
+    """
+    Generate a result message
+    @param result: Either 'success' or 'error'
+    @param msg: Message to send with details
+    """
+
+    if not result in ['success', 'error']:
+        return {
+            'result': 'error',
+            'msg': 'Failure in result_generator'
+        }
+
+    return {'result': result, 'msg': msg}
+
+
+def success_generator(msg: str) -> dict:
+    """
+    Generate an success message
+    @param msg: Message to send with details
+    """
+    return result_generator('success', msg)
+
+
+def error_generator(error: str) -> dict:
+    """
+    Generate an error message
+    @param error: Error string
+    """
+    return result_generator('error', error)
+
 @jukeboxBackend.get("/")
 async def root():
     return {"message": "PyJukebox"}
@@ -30,13 +62,19 @@ async def root():
 async def read_db():
     return read_jbdb('/jukebox/db.jbdb')
 
-@jukeboxBackend.get("/addFolder/{folder_name}")
+@jukeboxBackend.get("/addFolder/{new_folder_name}")
 async def add_folder(folder_name: str):
-    print('Add folder')
-    print(folder_name)
-    return jb_music_path_for_folder(folder_name)
+    create_new_folder(folder_name)
 
-@jukeboxBackend.post("/addFile/{folder_name}/{file_name}")
+    try:
+        create_new_folder(
+            new_folder_name,
+            '/jukebox/db.jbdb')
+        return success_generator('Folder created')
+    except Exception as e:
+        return error_generator(str(e))
+
+@jukeboxBackend.post("/addFiles/{folder_name}/{file_name}")
 async def add_folder(folder_name: str):
     print('Add file')
     print(file_name)

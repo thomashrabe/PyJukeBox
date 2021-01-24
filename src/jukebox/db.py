@@ -66,12 +66,29 @@ def add_new_file(db_file_path: str, code: str, new_data_path:str) -> None:
     with open(db_file_path, 'w') as f:
         json.dump(db, f, sort_keys=True, indent=4, separators=(',', ': '))
 
+def create_new_folder(new_folder_name: str, jbdb_path: str):
+    """
+    Creates a new folder entry
+    @param new_folder_name: A new folder
+    @param jbdb_path: Path to jbsb file
+    """
+
+    folder_name = os.path.join(
+        os.path.abspath(jbdb_path),
+        'Music',
+        new_folder_name
+    )
+
+    if os.path.exists(folder_name):
+        msg = '{} already exist!'.format(new_data_path)
+        raise IOError(msg)
+
+    os.mkdir(folder_name)
 
 def get_fail_sound() -> str:
     """
     Returns path to fail sound
     """
-    import pdb; pdb.set_trace()
     here = os.path.dirname(os.path.abspath(__file__))
     fail_path = os.path.join(here, '..', 'assets', 'fail.mp3')
     return fail_path
