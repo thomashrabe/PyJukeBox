@@ -68,7 +68,7 @@ class JukeBox(object):
                 # is read
                 for event in device.read():
                     if event.type == ecodes.EV_KEY:
-
+                        
                         event_string = str(categorize(event))
 
                         event_strings.append(event_string)
