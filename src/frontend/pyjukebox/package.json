@@ -17,7 +17,7 @@
     "popper": "^1.0.1",
     "popper.js": "^1.16.1",
     "register-service-worker": "^1.7.1",
-    "vue": "^2.6.11",
+    "vue": "^3.0.0",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
     "vue-router": "^3.2.0"
